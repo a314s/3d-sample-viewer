@@ -1,0 +1,74 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Build output
+dist/
+build/
+.out/
+.next/
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Tests/coverage
+coverage/
+*.lcov
+.jest/
+
+# Temp
+.tmp/
+temp/
+*.tmp
+
+# Cache
+.cache/
+.vite-inspect/
+.eslintcache
+
+# Types
+*.tsbuildinfo
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
+# Local upload storage (if any future adapters write here)
+uploads/
+
+# Verge3D large sources not needed for repo (keep runtime assets under public)
+public/verge3d/CAD platform/*.blend
+
+# Ignore Verge3D exported app assets to keep repo small
+public/verge3d/CAD platform/**
+!public/verge3d/CAD platform/CAD platform.html
+!public/verge3d/CAD platform/CAD platform.js
+!public/verge3d/CAD platform/CAD platform.css
+!public/verge3d/CAD platform/v3d.js
+# Optional: keep glTF if you want a default scene tracked; otherwise it stays local only
+#!public/verge3d/CAD platform/CAD platform.gltf
+#!public/verge3d/CAD platform/CAD platform.bin
+#!public/verge3d/CAD platform/visual_logic.js
+# Always ignore large optional exports
+public/verge3d/CAD platform/*.wasm
+public/verge3d/CAD platform/*.hdr
+public/verge3d/CAD platform/*.blend
