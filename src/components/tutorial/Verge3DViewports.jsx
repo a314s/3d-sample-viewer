@@ -18,8 +18,10 @@ export default function Verge3DViewports({
 
   // Build per-viewport app URL with role and optional punch factor
   const buildUrl = React.useCallback((role) => {
-    const base = "/verge3d/CAD platform/CAD platform.html";
-    const url = new URL(base, window.location.origin);
+    // Allow overriding the Verge3D app location via env at build time.
+    // If VITE_VERGE_APP_URL is not set, fall back to the bundled public/ path.
+    const raw = import.meta.env.VITE_VERGE_APP_URL || "/verge3d/CAD platform/CAD platform.html";
+    const url = new URL(raw, window.location.origin);
     if (modelUrl && modelUrl.trim()) {
       url.searchParams.set("load", modelUrl.trim());
     }
@@ -27,7 +29,7 @@ export default function Verge3DViewports({
     if (role === "detail" && punchFactor) {
       url.searchParams.set("punch", String(punchFactor));
     }
-    return url.pathname + url.search;
+    return url.pathname + url.search + url.hash;
   }, [modelUrl, punchFactor]);
 
   useEffect(() => {
