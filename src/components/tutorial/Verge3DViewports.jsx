@@ -76,8 +76,27 @@ export default function Verge3DViewports({
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
   }, [punchFactor]);
-
-  const Frame = ({ title, iframeRef, role }) => (
+ 
+  // Inject the camera-sync script into same-origin Verge3D iframes so any Verge export links cameras.
+  // For cross-origin (e.g., CDN) include <script src="/verge3d/inject/camera-sync.js"></script> in the Verge HTML.
+  const injectIntoIframe = (ref) => {
+    try {
+      const win = ref?.current?.contentWindow;
+      if (!win) return;
+      const doc = win.document; // will throw if cross-origin
+      if (!doc) return;
+      if (doc.querySelector('script[data-v3d-sync="1"]')) return; // already injected
+      const s = doc.createElement('script');
+      s.src = '/verge3d/inject/camera-sync.js';
+      s.async = true;
+      s.dataset.v3dSync = '1';
+      (doc.head || doc.body || doc.documentElement).appendChild(s);
+    } catch {
+      // Cross-origin: cannot inject; ensure the Verge HTML itself includes the script.
+    }
+  };
+ 
+   const Frame = ({ title, iframeRef, role }) => (
     <Card className={`bg-white border border-gray-200 shadow-sm overflow-hidden flex flex-col ${className}`}>
       <div className="flex items-center justify-between p-3 border-b border-gray-100 bg-gray-50">
         <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
@@ -86,15 +105,16 @@ export default function Verge3DViewports({
         {isLoading ? (
           <Skeleton className="w-full h-full" />
         ) : (
-          <iframe
-            ref={iframeRef}
-            title={`verge3d-${role}`}
-            src={buildUrl(role)}
-            className="w-full h-full"
-            style={{ border: "0" }}
-            allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope; magnetometer"
-          />
-        )}
+         <iframe
+           ref={iframeRef}
+           title={`verge3d-${role}`}
+           src={buildUrl(role)}
+           className="w-full h-full"
+           style={{ border: "0" }}
+           allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope; magnetometer"
+           onLoad={() => injectIntoIframe(iframeRef)}
+         />
+       )}
       </div>
     </Card>
   );
